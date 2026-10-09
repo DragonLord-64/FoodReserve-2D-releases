@@ -40,19 +40,20 @@
     if (window.visualViewport) window.visualViewport.addEventListener("resize", fitViewport);
     canvas.addEventListener("contextmenu", event => event.preventDefault());
     fitViewport();
+    const cacheBust = "?v=" + encodeURIComponent("20261009071522");
     const config = {
-      dataUrl: "Build/Web.data",
-      frameworkUrl: "Build/Web.framework.js",
-      codeUrl: "Build/Web.wasm",
+      dataUrl: "Build/Web.data" + cacheBust,
+      frameworkUrl: "Build/Web.framework.js" + cacheBust,
+      codeUrl: "Build/Web.wasm" + cacheBust,
       streamingAssetsUrl: "StreamingAssets",
       companyName: "FoodReserve",
       productName: "FoodReserve 2D",
-      productVersion: "1.0",
+      productVersion: "20261009071522",
       devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
       showBanner: (message, type) => { if (type === "error") showError(message); else console.warn(message); }
     };
     const loader = document.createElement("script");
-    loader.src = "Build/Web.loader.js";
+    loader.src = "Build/Web.loader.js" + cacheBust;
     loader.onerror = () => showError("Could not download the game loader.");
     loader.onload = () => createUnityInstance(canvas, config, value => { progress.value = value; })
       .then(() => { loading.hidden = true; canvas.focus(); })
