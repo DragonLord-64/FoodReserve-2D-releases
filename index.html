@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#263a2c">
+  <title>Food Reserve</title>
+  <style>
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #263a2c; }
+    #game { position: fixed; inset: 0; touch-action: none; box-sizing: border-box; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+    canvas { display: block; width: 100%; height: 100%; outline: none; touch-action: none; }
+    #loading { position: absolute; inset: 0; display: grid; place-content: center; gap: 12px; padding: 24px; box-sizing: border-box; color: #fff; font: 18px system-ui, sans-serif; text-align: center; background: #263a2c; }
+    #loading[hidden] { display: none; }
+    progress { width: min(70vw, 320px); height: 18px; accent-color: #a2c99c; }
+    #status { max-width: 32rem; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <main id="game">
+    <canvas id="unity-canvas" tabindex="-1" aria-label="Food Reserve multiplayer game"></canvas>
+    <div id="loading" role="status"><strong>Food Reserve</strong><span id="status">Loading the world…</span><progress id="progress" max="1" value="0"></progress></div>
+  </main>
+  <script>
+    const canvas = document.getElementById("unity-canvas");
+    const loading = document.getElementById("loading");
+    const status = document.getElementById("status");
+    const progress = document.getElementById("progress");
+    function fitViewport() {
+      const viewport = window.visualViewport;
+      const container = document.getElementById("game");
+      container.style.width = `${viewport ? viewport.width : window.innerWidth}px`;
+      container.style.height = `${viewport ? viewport.height : window.innerHeight}px`;
+    }
+    function showError(message) {
+      loading.hidden = false;
+      progress.hidden = true;
+      status.textContent = `The game could not start. Reload this page to try again. ${String(message)}`;
+    }
+    window.addEventListener("resize", fitViewport);
+    if (window.visualViewport) window.visualViewport.addEventListener("resize", fitViewport);
+    canvas.addEventListener("contextmenu", event => event.preventDefault());
+    fitViewport();
+    const config = {
+      dataUrl: "Build/Web.data",
+      frameworkUrl: "Build/Web.framework.js",
+      codeUrl: "Build/Web.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "FoodReserve",
+      productName: "FoodReserve 2D",
+      productVersion: "1.0",
+      devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+      showBanner: (message, type) => { if (type === "error") showError(message); else console.warn(message); }
+    };
+    const loader = document.createElement("script");
+    loader.src = "Build/Web.loader.js";
+    loader.onerror = () => showError("Could not download the game loader.");
+    loader.onload = () => createUnityInstance(canvas, config, value => { progress.value = value; })
+      .then(() => { loading.hidden = true; canvas.focus(); })
+      .catch(showError);
+    document.body.appendChild(loader);
+  </script>
+</body>
+</html>
