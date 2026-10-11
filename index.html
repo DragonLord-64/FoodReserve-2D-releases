@@ -40,7 +40,7 @@
     if (window.visualViewport) window.visualViewport.addEventListener("resize", fitViewport);
     canvas.addEventListener("contextmenu", event => event.preventDefault());
     fitViewport();
-    const cacheBust = "?v=" + encodeURIComponent("20261011022123");
+    const cacheBust = "?v=" + encodeURIComponent("20261011070055");
     const config = {
       dataUrl: "Build/Web.data" + cacheBust,
       frameworkUrl: "Build/Web.framework.js" + cacheBust,
@@ -48,7 +48,7 @@
       streamingAssetsUrl: "StreamingAssets",
       companyName: "FoodReserve",
       productName: "FoodReserve 2D",
-      productVersion: "20261011022123",
+      productVersion: "20261011070055",
       devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
       showBanner: (message, type) => { if (type === "error") showError(message); else console.warn(message); }
     };
